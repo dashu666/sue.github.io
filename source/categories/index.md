@@ -1,5 +1,5 @@
 ---
-title: categories
+title: 分类
 date: 2022-08-22 11:27:48
 type: categories
 comments: false
