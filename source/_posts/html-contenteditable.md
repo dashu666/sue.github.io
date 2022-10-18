@@ -179,7 +179,7 @@ fastclick.prototype.focus = function (targetElement) {
   targetElement.focus()
 }
 ```
-## 添加placeholder
+#### 添加placeholder
 ``` html
 <div 
   class="ss-editor needsclick"
