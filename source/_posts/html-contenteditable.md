@@ -111,28 +111,28 @@ keepCursorEnd ($isReturn) {
 </div>
 ```
 ```js
-  // 粘贴时消除样式
-  HandlePaste (e) {
-    e.stopPropagation()
-    e.preventDefault()
-    let text = ''
-    const event = e.originalEvent || e
-    if (event.clipboardData && event.clipboardData.getData) {
-      text = event.clipboardData.getData('text/plain')
-    } else if (window['clipboardData'] && window['clipboardData'].getData) {
-      text = window['clipboardData'].getData('Text')
-    }
-
-    // 清除回车
-    text = text.replace(/\[\d+\]|\n|\r/ig, '')
-
-    // 检查浏览器是否支持指定的编辑器命令
-    if (document.queryCommandSupported('insertText')) {
-      document.execCommand('insertText', false, text)
-    } else {
-      document.execCommand('paste', false, text)
-    }
+// 粘贴时消除样式
+HandlePaste (e) {
+  e.stopPropagation()
+  e.preventDefault()
+  let text = ''
+  const event = e.originalEvent || e
+  if (event.clipboardData && event.clipboardData.getData) {
+    text = event.clipboardData.getData('text/plain')
+  } else if (window['clipboardData'] && window['clipboardData'].getData) {
+    text = window['clipboardData'].getData('Text')
   }
+
+  // 清除回车
+  text = text.replace(/\[\d+\]|\n|\r/ig, '')
+
+  // 检查浏览器是否支持指定的编辑器命令
+  if (document.queryCommandSupported('insertText')) {
+    document.execCommand('insertText', false, text)
+  } else {
+    document.execCommand('paste', false, text)
+  }
+}
 ```
 
 ## 常见问题
@@ -177,6 +177,27 @@ fastclick.prototype.focus = function (targetElement) {
   }
   // 新增一行：都获取焦点
   targetElement.focus()
+}
+```
+#### 添加换行（contenteditable本身换行会插入div标签）
+``` html
+<div 
+  class="needsclick"
+  contenteditable="true"
+  @keydown="handleKeyDown">
+</div>
+```
+```js
+handleKeyDown (e) {
+  if (e.keyCode === 13) {
+    document.execCommand('insertHTML', false, '\n&zwnj;')
+    e.preventDefault()
+  }
+}
+```
+```css
+.ss-editor {
+  white-space: pre-wrap;
 }
 ```
 #### 添加placeholder

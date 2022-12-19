@@ -113,6 +113,64 @@ drawRoundRect(ctx, r, x, y, w, h, img) {
 }
 ```
 
+### 微信小程序canvas绘制圆角矩形
+```js
+/**
+   * 
+   * @param {CanvasContext} ctx canvas上下文
+   * @param {number} x 圆角矩形选区的左上角 x坐标
+   * @param {number} y 圆角矩形选区的左上角 y坐标
+   * @param {number} w 圆角矩形选区的宽度
+   * @param {number} h 圆角矩形选区的高度
+   
+   // 此处有两个圆角半径是项目需要，只展示左上角 右上角的圆角或左下角 右下角的圆角
+   * @param {number} r 圆角的半径   左上角 右上角
+   * @param {number} r1 圆角的半径 左下角 右下角
+   */
+  roundRect(ctx, x, y, w, h, r, r1) {
+    // 开始绘制
+    ctx.save() // 先保存状态 已便于画完后面再用
+    ctx.beginPath()
+    // 因为边缘描边存在锯齿，最好指定使用 transparent 填充
+    // 这里是使用 fill 还是 stroke都可以，二选一即可
+    ctx.setFillStyle('rgba(0,0,0,.3)')
+    // ctx.setStrokeStyle('transparent')
+
+    // 左上角
+    ctx.arc(x + r, y + r, r, Math.PI, Math.PI * 1.5)
+    
+    // border-top
+    ctx.moveTo(x + r, y)
+    ctx.lineTo(x + w - r, y)
+    ctx.lineTo(x + w, y + r)
+    // 右上角
+    ctx.arc(x + w - r, y + r, r, Math.PI * 1.5, Math.PI * 2)
+    
+    // border-right
+    ctx.lineTo(x + w, y + h - r1)
+    ctx.lineTo(x + w - r1, y + h)
+    // 右下角
+    ctx.arc(x + w - r1, y + h - r1, r1, 0, Math.PI * 0.5)
+    
+    // border-bottom
+    ctx.lineTo(x + r1, y + h)
+    ctx.lineTo(x, y + h - r1)
+    // 左下角
+    ctx.arc(x + r1, y + h - r1, r1, Math.PI * 0.5, Math.PI)
+    
+    // border-left
+    ctx.lineTo(x, y + r)
+    ctx.lineTo(x + r, y)
+    
+    // 这里是使用 fill 还是 stroke都可以，二选一即可，但是需要与上面对应
+    ctx.fill()
+    // ctx.stroke()
+    ctx.closePath()
+    // 剪切
+    ctx.clip()
+  },
+```
+
 ### canvas绘制自动换行的字符串（接口返回的文本）
 ```js
 /**
