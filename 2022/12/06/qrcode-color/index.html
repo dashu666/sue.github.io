@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"suesoft.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="参考：https:&#x2F;&#x2F;www.gxlcms.com&#x2F;JavaScript-237527.html 利用canvas drawImage方法把生成的黑白二维码画到canvas上，canvasGetImageData方法获得一个矩形区域所有像素点的信息，每四个一组，分别代表r,g,b和透明度。修改颜色后，利用canvasPutImageData方法，把更改过的像素信息数组重新扔回画布上。 这里用到了深">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小程序canvas彩色二维码生成">
+<meta property="og:url" content="https://suesoft.github.io/2022/12/06/qrcode-color/index.html">
+<meta property="og:site_name" content="Suesoft&#39;s Blog!">
+<meta property="og:description" content="参考：https:&#x2F;&#x2F;www.gxlcms.com&#x2F;JavaScript-237527.html 利用canvas drawImage方法把生成的黑白二维码画到canvas上，canvasGetImageData方法获得一个矩形区域所有像素点的信息，每四个一组，分别代表r,g,b和透明度。修改颜色后，利用canvasPutImageData方法，把更改过的像素信息数组重新扔回画布上。 这里用到了深">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-12-06T07:34:50.000Z">
+<meta property="article:modified_time" content="2022-12-19T06:32:58.013Z">
+<meta property="article:author" content="suesoft">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://suesoft.github.io/2022/12/06/qrcode-color/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://suesoft.github.io/2022/12/06/qrcode-color/","path":"2022/12/06/qrcode-color/","title":"小程序canvas彩色二维码生成"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>小程序canvas彩色二维码生成 | Suesoft's Blog!</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Suesoft's Blog!</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2-DFS"><span class="nav-number">1.</span> <span class="nav-text">关于深度优先搜索(DFS)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">深度优先搜索算法步骤</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">suesoft</p>
+  <div class="site-description" itemprop="description">大大叔的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/suesoft" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;suesoft" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://suesoft.github.io/2022/12/06/qrcode-color/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="suesoft">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Suesoft's Blog!">
+      <meta itemprop="description" content="大大叔的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="小程序canvas彩色二维码生成 | Suesoft's Blog!">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          小程序canvas彩色二维码生成
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-12-06 15:34:50" itemprop="dateCreated datePublished" datetime="2022-12-06T15:34:50+08:00">2022-12-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-12-19 14:32:58" itemprop="dateModified" datetime="2022-12-19T14:32:58+08:00">2022-12-19</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>参考：<a target="_blank" rel="noopener" href="https://www.gxlcms.com/JavaScript-237527.html">https://www.gxlcms.com/JavaScript-237527.html</a></p>
+<p>利用canvas drawImage方法把生成的黑白二维码画到canvas上，canvasGetImageData方法获得一个矩形区域所有像素点的信息，每四个一组，分别代表r,g,b和透明度。修改颜色后，利用canvasPutImageData方法，把更改过的像素信息数组重新扔回画布上。</p>
+<p>这里用到了深度优先搜索去遍历图形，然后给码点进行对应的颜色赋值</p>
+<h5 id="关于深度优先搜索-DFS"><a href="#关于深度优先搜索-DFS" class="headerlink" title="关于深度优先搜索(DFS)"></a>关于深度优先搜索(DFS)</h5><p>深度优先搜索是常见的图搜索方法之一。会沿着一条路径一直搜索下去，在无法搜索时，回退到刚刚访问过的节点。深度优先遍历按照深度优先搜索的方式对图进行遍历。并且每个节点只能访问一次。</p>
+<p>深搜优先搜索的本质上就是持续搜索，遍历了所有可能的情况，必然能得到解。DFS搜索的流程是一个树的形式，每次一条路走到黑。</p>
+<h5 id="深度优先搜索算法步骤"><a href="#深度优先搜索算法步骤" class="headerlink" title="深度优先搜索算法步骤"></a>深度优先搜索算法步骤</h5><ul>
+<li>步骤1：初始化图中的所有节点为均未被访问。</li>
+<li>步骤2：从图中的某个节点v出发，访问v并标记其已被访问。</li>
+<li>步骤3：依次检查v的所有邻接点w，如果w未被访问，则从w出发进行深度优先遍历（递归调用，重复步骤2和3）。</li>
+</ul>
+<p>代码：<a target="_blank" rel="noopener" href="https://github.com/suesoft/uniapp-common-components/blob/master/src/pages/component/color-qrcode/color-qrcode.vue">https://github.com/suesoft/color-qrcode</a></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">canvas</span></span></span><br><span class="line"><span class="tag">  <span class="attr">canvas-id</span>=<span class="string">&quot;secondCanvas&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">:style</span>=<span class="string">&quot;&#123;</span></span></span><br><span class="line"><span class="string"><span class="tag">    width: width + &#x27;px&#x27;,</span></span></span><br><span class="line"><span class="string"><span class="tag">    height: height + &#x27;px&#x27;,</span></span></span><br><span class="line"><span class="string"><span class="tag">  &#125;&quot;</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="attr">props</span>: &#123;</span><br><span class="line">    <span class="comment">// 必传。原二维码图片（临时路径）</span></span><br><span class="line">    <span class="attr">codeImg</span>: &#123;</span><br><span class="line">      <span class="attr">type</span>: <span class="title class_">String</span>,</span><br><span class="line">      <span class="attr">default</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">width</span>: &#123;</span><br><span class="line">      <span class="attr">type</span>: <span class="title class_">Number</span>,</span><br><span class="line">      <span class="attr">default</span>: <span class="number">200</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">height</span>: &#123;</span><br><span class="line">      <span class="attr">type</span>: <span class="title class_">Number</span>,</span><br><span class="line">      <span class="attr">default</span>: <span class="number">200</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 渲染的颜色</span></span><br><span class="line">    <span class="comment">// 不传默认#333， 传单个颜色默认全部渲染， 多个颜色需要传方向，不传就默认随机</span></span><br><span class="line">    <span class="attr">colors</span>: &#123;</span><br><span class="line">      <span class="attr">type</span>: <span class="title class_">Array</span>,</span><br><span class="line">      <span class="attr">default</span>: [<span class="string">&quot;#333333&quot;</span>],</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 颜色渲染方向。</span></span><br><span class="line">    <span class="comment">// toRight: 从左往右 toBottom: 从上往下 toRightBottom: 从左上到右下</span></span><br><span class="line">    <span class="attr">direction</span>: &#123;</span><br><span class="line">      <span class="attr">type</span>: <span class="title class_">String</span>,</span><br><span class="line">      <span class="attr">default</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="title function_">data</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="attr">book</span>: [], <span class="comment">// 标记数组</span></span><br><span class="line">      <span class="attr">imgD</span>: <span class="literal">null</span>, <span class="comment">// 预留给像素信息数组</span></span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="title function_">created</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">drawCanvas</span>();</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  <span class="attr">methods</span>: &#123;</span><br><span class="line">    <span class="comment">// 画图</span></span><br><span class="line">    <span class="title function_">drawCanvas</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> that = <span class="variable language_">this</span>;</span><br><span class="line">      <span class="keyword">const</span> bg = <span class="variable language_">this</span>.<span class="title function_">colorRgb</span>(<span class="string">&quot;#fff&quot;</span>); <span class="comment">// 忽略的背景色</span></span><br><span class="line"></span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">book</span> = [];</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="variable language_">this</span>.<span class="property">height</span>; i++) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">book</span>[i] = [];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; <span class="variable language_">this</span>.<span class="property">width</span>; j++) &#123;</span><br><span class="line">          <span class="variable language_">this</span>.<span class="property">book</span>[i][j] = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 随机colors数组的一个序号</span></span><br><span class="line">      <span class="keyword">var</span> ranNum = (<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> len = that.<span class="property">colors</span>.<span class="property">length</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="title class_">Math</span>.<span class="title function_">floor</span>(<span class="title class_">Math</span>.<span class="title function_">random</span>() * len);</span><br><span class="line">        &#125;;</span><br><span class="line">      &#125;)();</span><br><span class="line"></span><br><span class="line">      <span class="comment">// canvas 部分</span></span><br><span class="line">      <span class="keyword">const</span> &#123; width, height &#125; = <span class="variable language_">this</span>;</span><br><span class="line">      <span class="keyword">const</span> ctx = uni.<span class="title function_">createCanvasContext</span>(<span class="string">&quot;secondCanvas&quot;</span>, <span class="variable language_">this</span>);</span><br><span class="line">      ctx.<span class="title function_">drawImage</span>(<span class="variable language_">this</span>.<span class="property">codeImg</span>, <span class="number">0</span>, <span class="number">0</span>, width, height);</span><br><span class="line">      ctx.<span class="title function_">draw</span>(</span><br><span class="line">        <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">          uni.<span class="title function_">canvasGetImageData</span>(</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">canvasId</span>: <span class="string">&quot;secondCanvas&quot;</span>,</span><br><span class="line">              <span class="attr">x</span>: <span class="number">0</span>,</span><br><span class="line">              <span class="attr">y</span>: <span class="number">0</span>,</span><br><span class="line">              width,</span><br><span class="line">              height,</span><br><span class="line">              <span class="attr">success</span>: <span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">                <span class="variable language_">this</span>.<span class="property">imgD</span> = res;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; height; i++) &#123;</span><br><span class="line">                  <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; width; j++) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (</span><br><span class="line">                      <span class="variable language_">this</span>.<span class="property">book</span>[i][j] == <span class="number">0</span> &amp;&amp;</span><br><span class="line">                      <span class="variable language_">this</span>.<span class="title function_">checkColor</span>(i, j, width, bg)</span><br><span class="line">                    ) &#123;</span><br><span class="line">                      <span class="comment">// 没标记过 且是非背景色</span></span><br><span class="line">                      <span class="variable language_">this</span>.<span class="property">book</span>[i][j] = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">                      <span class="keyword">var</span> color = that.<span class="title function_">colorRgb</span>(<span class="variable language_">this</span>.<span class="property">colors</span>[<span class="title function_">ranNum</span>()]);</span><br><span class="line">                      <span class="variable language_">this</span>.<span class="title function_">dfs</span>(i, j, color, bg); <span class="comment">// 深度优先搜索</span></span><br><span class="line">                    &#125;</span><br><span class="line">                  &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">                  uni.<span class="title function_">canvasPutImageData</span>(</span><br><span class="line">                    &#123;</span><br><span class="line">                      <span class="attr">canvasId</span>: <span class="string">&quot;secondCanvas&quot;</span>,</span><br><span class="line">                      <span class="attr">x</span>: <span class="number">0</span>,</span><br><span class="line">                      <span class="attr">y</span>: <span class="number">0</span>,</span><br><span class="line">                      <span class="attr">width</span>: width,</span><br><span class="line">                      <span class="attr">height</span>: height,</span><br><span class="line">                      <span class="attr">data</span>: <span class="variable language_">this</span>.<span class="property">imgD</span>.<span class="property">data</span>,</span><br><span class="line">                      <span class="title function_">success</span>(<span class="params">res</span>) &#123;</span><br><span class="line">                        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;=============2===============&quot;</span>, res);</span><br><span class="line">                      &#125;,</span><br><span class="line">                      <span class="title function_">fail</span>(<span class="params">err</span>) &#123;</span><br><span class="line">                        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;=============2=====err&quot;</span>, err);</span><br><span class="line">                      &#125;,</span><br><span class="line">                    &#125;,</span><br><span class="line">                    <span class="variable language_">this</span></span><br><span class="line">                  );</span><br><span class="line">                &#125;, <span class="number">500</span>);</span><br><span class="line">              &#125;,</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="variable language_">this</span></span><br><span class="line">          );</span><br><span class="line">        &#125;, <span class="number">500</span>)</span><br><span class="line">      );</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 深度优先搜索</span></span><br><span class="line">    <span class="keyword">async</span> <span class="title function_">dfs</span>(<span class="params">x, y, color, bg</span>) &#123;</span><br><span class="line">      <span class="comment">// 必须执行完成数据更新后 再执行后面的递归，不然会导致死循环，堆栈溢出</span></span><br><span class="line">      <span class="keyword">await</span> <span class="variable language_">this</span>.<span class="title function_">changeColor</span>(x, y, color);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 方向数组</span></span><br><span class="line">      <span class="keyword">const</span> next = [</span><br><span class="line">        [<span class="number">0</span>, <span class="number">1</span>], <span class="comment">// 右</span></span><br><span class="line">        [<span class="number">1</span>, <span class="number">0</span>], <span class="comment">// 下</span></span><br><span class="line">        [<span class="number">0</span>, -<span class="number">1</span>], <span class="comment">// 左</span></span><br><span class="line">        [-<span class="number">1</span>, <span class="number">0</span>], <span class="comment">// 上</span></span><br><span class="line">      ];</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">var</span> k = <span class="number">0</span>; k &lt;= <span class="number">3</span>; k++) &#123;</span><br><span class="line">        <span class="comment">// 下一个坐标</span></span><br><span class="line">        <span class="keyword">var</span> tx = x + next[k][<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">var</span> ty = y + next[k][<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 判断越界</span></span><br><span class="line">        <span class="keyword">if</span> (tx &lt; <span class="number">0</span> || tx &gt;= <span class="variable language_">this</span>.<span class="property">height</span> || ty &lt; <span class="number">0</span> || ty &gt;= <span class="variable language_">this</span>.<span class="property">width</span>) &#123;</span><br><span class="line">          <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">book</span>[tx][ty] == <span class="number">0</span> &amp;&amp; <span class="variable language_">this</span>.<span class="title function_">checkColor</span>(tx, ty, <span class="variable language_">this</span>.<span class="property">width</span>, bg)) &#123;</span><br><span class="line">          <span class="comment">// 判断位置</span></span><br><span class="line">          <span class="variable language_">this</span>.<span class="property">book</span>[tx][ty] = <span class="number">1</span>;</span><br><span class="line">          <span class="variable language_">this</span>.<span class="title function_">dfs</span>(tx, ty, color, bg);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 验证该位置的像素 不是背景色为true</span></span><br><span class="line">    <span class="title function_">checkColor</span>(<span class="params">i, j, width, bg</span>) &#123;</span><br><span class="line">      <span class="keyword">var</span> x = <span class="variable language_">this</span>.<span class="title function_">calc</span>(width, i, j);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">imgD</span>.<span class="property">data</span>[x] != bg[<span class="number">0</span>] &amp;&amp;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">imgD</span>.<span class="property">data</span>[x + <span class="number">1</span>] != bg[<span class="number">1</span>] &amp;&amp;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">imgD</span>.<span class="property">data</span>[x + <span class="number">2</span>] != bg[<span class="number">2</span>]</span><br><span class="line">      ) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 改变颜色值</span></span><br><span class="line">    <span class="title function_">changeColor</span>(<span class="params">i, j, colorArr</span>) &#123;</span><br><span class="line">      <span class="keyword">var</span> x = <span class="variable language_">this</span>.<span class="title function_">calc</span>(<span class="variable language_">this</span>.<span class="property">width</span>, i, j);</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">imgD</span>.<span class="property">data</span>[x] = colorArr[<span class="number">0</span>];</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">imgD</span>.<span class="property">data</span>[x + <span class="number">1</span>] = colorArr[<span class="number">1</span>];</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">imgD</span>.<span class="property">data</span>[x + <span class="number">2</span>] = colorArr[<span class="number">2</span>];</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回对应像素点的序号</span></span><br><span class="line">    <span class="title function_">calc</span>(<span class="params">width, i, j</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (j &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        j = <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">4</span> * (i * width + j);</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分离颜色参数 返回一个数组</span></span><br><span class="line">    <span class="title function_">colorRgb</span>(<span class="params">str</span>) &#123;</span><br><span class="line">      <span class="keyword">const</span> reg = <span class="regexp">/^#([0-9a-fA-f]&#123;3&#125;|[0-9a-fA-f]&#123;6&#125;)$/</span>;</span><br><span class="line">      <span class="keyword">var</span> sColor = str.<span class="title function_">toLowerCase</span>();</span><br><span class="line">      <span class="keyword">if</span> (sColor &amp;&amp; reg.<span class="title function_">test</span>(sColor)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (sColor.<span class="property">length</span> === <span class="number">4</span>) &#123;</span><br><span class="line">          <span class="keyword">var</span> sColorNew = <span class="string">&quot;#&quot;</span>;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; <span class="number">4</span>; i += <span class="number">1</span>) &#123;</span><br><span class="line">            sColorNew += sColor.<span class="title function_">slice</span>(i, i + <span class="number">1</span>).<span class="title function_">concat</span>(sColor.<span class="title function_">slice</span>(i, i + <span class="number">1</span>));</span><br><span class="line">          &#125;</span><br><span class="line">          sColor = sColorNew;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 处理六位的颜色值</span></span><br><span class="line">        <span class="keyword">var</span> sColorChange = [];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; <span class="number">7</span>; i += <span class="number">2</span>) &#123;</span><br><span class="line">          sColorChange.<span class="title function_">push</span>(<span class="built_in">parseInt</span>(<span class="string">&quot;0x&quot;</span> + sColor.<span class="title function_">slice</span>(i, i + <span class="number">2</span>)));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sColorChange;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> sColorChange = sColor</span><br><span class="line">          .<span class="title function_">replace</span>(<span class="regexp">/(rgb\()|(\))/g</span>, <span class="string">&quot;&quot;</span>)</span><br><span class="line">          .<span class="title function_">split</span>(<span class="string">&quot;,&quot;</span>)</span><br><span class="line">          .<span class="title function_">map</span>(<span class="keyword">function</span> (<span class="params">a</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">parseInt</span>(a);</span><br><span class="line">          &#125;);</span><br><span class="line">        <span class="keyword">return</span> sColorChange;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/12/06/hello-world/" rel="prev" title="Hello World">
+                  <i class="fa fa-chevron-left"></i> Hello World
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">suesoft</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
