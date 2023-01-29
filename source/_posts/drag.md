@@ -2,7 +2,7 @@
 title: js移动端单个拖拽功能的实现
 author: sue
 date: 2022-10-18 10:37:16
-tags:
+tags: 拖拽
 categories: vue
 ---
 

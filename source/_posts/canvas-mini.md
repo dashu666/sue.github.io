@@ -2,8 +2,8 @@
 title: 小程序中canvas生成海报总结
 author: sue
 date: 2022-10-18 14:12:31
-tags: canvas 小程序
-categories: canvas
+tags: 海报
+categories: 小程序
 ---
 
 ```html
@@ -209,4 +209,27 @@ drawText(ctx, t,x,y,w){
     ctx.fillText(itm,x,y+(idx+1)*20);
   })
 }
+```
+### 生成的海报导出模糊
+把输出图片的宽destWidth, 高destHeight设置大点
+```js
+const dpr = uni.getSystemInfoSync().pixelRatio;
+
+ctx.draw(false, () => {
+  setTimeout(() => {
+    uni.canvasToTempFilePath(
+      {
+        width: _imgViewWidth,
+        height: _imgViewHeight,
+        destWidth: _imgViewWidth  * dpr, // 输出图片宽度
+        destHeight: _imgViewHeight  * dpr, // 输出图片高度
+        canvasId: "clipCanvas",
+        success: (res) => {
+          console.log(res.tempFilePath);
+        },
+      },
+      this
+    );
+  }, 500)
+}, this );
 ```

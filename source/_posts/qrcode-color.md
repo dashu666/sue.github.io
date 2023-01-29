@@ -2,8 +2,8 @@
 title: 小程序canvas彩色二维码生成
 author: sue
 date: 2022-12-06 15:34:50
-tags:
-categories:
+tags: 二维码
+categories: 小程序
 ---
 参考：https://www.gxlcms.com/JavaScript-237527.html
 
